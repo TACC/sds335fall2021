@@ -1,0 +1,260 @@
+[login1 newuserdir:4] hostname
+login1.frontera.tacc.utexas.edu
+[login1 newuserdir:5] who
+minyard  pts/0        2021-08-10 18:42 (129.114.63.40)
+.... list of users remove ...
+[login1 newuserdir:6] ls
+directorylisting  duplicate  fooout  lorem  newdir/  newfile  otherdir/  otherfile
+[login1 newuserdir:7] wc lorem
+  11  466 3178 lorem
+[login1 newuserdir:8] # lines, words, characters
+[login1 newuserdir:8] wc -l !$
+wc -l # lines, words, characters
+0
+[login1 newuserdir:9] # sorry, ididn't mean to do that
+[login1 newuserdir:9] wc -l lorem
+11 lorem
+[login1 newuserdir:10] who | wc -l
+82
+[login1 newuserdir:11] # oh, just for the heck of it
+
+[login1 newuserdir:13] mkdir empty
+[login1 newuserdir:14] cd !$
+cd empty
+[login1 empty:15] # the ` !$ ' means: last word of the previous line
+[login1 empty:15] ls
+[login1 empty:16] ls *
+ls: cannot access *: No such file or directory
+[login1 empty:17] ls * > listing
+ls: cannot access *: No such file or directory
+[login1 empty:18] cat listing
+[login1 empty:19] ls * 2>errors
+listing
+[login1 empty:20] # sorry. backtrack
+[login1 empty:20] rm listing
+[login1 empty:21] ls
+errors
+[login1 empty:22] rm errors
+[login1 empty:23] ls *
+ls: cannot access *: No such file or directory
+[login1 empty:24] ls * 2>/dev/null
+[login1 empty:25] ls *.c 1>all_my_programs 2>/dev/null
+[login1 empty:26] cat all_my_programs
+[login1 empty:27] touch main.c
+[login1 empty:28] ls *.c 1>all_my_programs 2>/dev/null
+[login1 empty:29] cat all_my_programs
+main.c
+[login1 empty:30] cd ..
+[login1 newuserdir:31] ls
+directorylisting  duplicate  empty/  fooout  lorem  newdir/  newfile  otherdir/  otherfile
+[login1 newuserdir:32] alias ls='ls -F'
+[login1 newuserdir:33] ls
+directorylisting  duplicate  empty/  fooout  lorem  newdir/  newfile  otherdir/  otherfile
+[login1 newuserdir:34] emacs ~/.bashrc
+[login1 newuserdir:35] # dot-bashrc is a file that is executed every time you log in.
+[login1 newuserdir:35] # so that's a good place to put aliases
+[login1 newuserdir:35] unalias ls
+[login1 newuserdir:36] ls
+directorylisting  duplicate  empty  fooout  lorem  newdir  newfile  otherdir  otherfile
+[login1 newuserdir:37] !al
+alias ls='ls -F'
+[login1 newuserdir:38] ls -l
+total 32
+-rw------- 1 eijkhout G-25072   59 Aug 31 17:31 directorylisting
+-rw------- 1 eijkhout G-25072   22 Aug 31 17:31 duplicate
+drwx------ 2 eijkhout G-25072 4096 Sep  2 14:16 empty/
+-rw------- 1 eijkhout G-25072    4 Aug 31 17:31 fooout
+-rw------- 1 eijkhout G-25072 3178 Aug 31 17:31 lorem
+drwx------ 2 eijkhout G-25072 4096 Aug 31 17:31 newdir/
+-rw------- 1 eijkhout G-25072   22 Aug 31 17:31 newfile
+drwx------ 2 eijkhout G-25072 4096 Aug 31 17:31 otherdir/
+-rw------- 1 eijkhout G-25072    0 Aug 31 17:31 otherfile
+[login1 newuserdir:39] cd empty
+[login1 empty:40] cd ..
+[login1 newuserdir:41] chmod u-x empty
+[login1 newuserdir:42] cd empty
+-bash: cd: empty: Permission denied
+[login1 newuserdir:43] ls -l empty/
+ls: cannot access empty/main.c: Permission denied
+ls: cannot access empty/all_my_programs: Permission denied
+total 0
+-????????? ? ? ? ?            ? all_my_programs
+-????????? ? ? ? ?            ? main.c
+[login1 newuserdir:44] ls -ld empty/
+drw------- 2 eijkhout G-25072 4096 Sep  2 14:16 empty//
+[login1 newuserdir:45] chmod u+x empty
+[login1 newuserdir:46] ls empty/
+all_my_programs  main.c
+[login1 newuserdir:47] groups
+G-25072 G-1111 G-1998 G-2010 G-50001 G-80252 G-80452 G-80716 G-80781 G-80907 G-81235 G-81643 G-800548 G-800756 G-800760 G-800914 G-801481 G-801978 G-801980 G-802033 G-802069 G-802400 G-802412 G-803417 G-803450 G-803452 G-803456 G-803586 G-803673 G-813797 G-813984 G-814196 G-814493 G-814494 G-814534 G-814661 G-814718 G-814731 G-814743 G-815172 G-815181 G-815253 G-815499 G-815597 G-815706 G-815762 G-816299 G-816890 G-816920 G-816966 G-817034 G-817449 G-817478 G-817630 G-818081 G-818133 G-818134 G-818464 G-819394 G-819668 G-821716 G-821740 G-822192 G-822941 G-822962
+[login1 newuserdir:48] mkdir scripting
+[login1 newuserdir:49] cd !$
+cd scripting
+[login1 scripting:50] emacs hello.sh
+
+[1]+  Stopped                 emacs hello.sh
+[login1 scripting:51] # in emacs I started typing, and then I did Ctrl-z to push emacs in the background
+[login1 scripting:51] # if I go ` fg ' then emacs becomes foreground again:
+[login1 scripting:51] fg
+emacs hello.sh
+
+[1]+  Stopped                 emacs hello.sh
+[login1 scripting:52] # now I have a script:
+[login1 scripting:52] cat hello.sh
+#!/bin/bash
+
+echo "hello world"
+[login1 scripting:53] hello.sh
+-bash: ./hello.sh: Permission denied
+[login1 scripting:54] ls -l hello.sh
+-rw------- 1 eijkhout G-25072 32 Sep  2 14:28 hello.sh
+[login1 scripting:55] # it needs ` x ' permission to run
+[login1 scripting:55] fg
+emacs hello.sh
+
+[1]+  Stopped                 emacs hello.sh
+[login1 scripting:56] # saving in emacs : C-x C-s
+[login1 scripting:56] chmod u+x hello.sh
+[login1 scripting:57] hello.sh
+Hello world
+[login1 scripting:58] ls -l !$
+ls -l hello.sh
+-rwx------ 1 eijkhout G-25072 32 Sep  2 14:31 hello.sh*
+[login1 scripting:59] # someone suggested: chmod 755 hello.sh
+[login1 scripting:59] # that is too drastic: it gives evertyone permission
+[login1 scripting:59] fg
+emacs hello.sh
+
+[1]+  Stopped                 emacs hello.sh
+[login1 scripting:60] # exit emacs : C-x C-c
+[login1 scripting:60] fg
+emacs hello.sh
+[login1 scripting:61] emacs repeat_after_me.sh
+
+[1]+  Stopped                 emacs repeat_after_me.sh
+[login1 scripting:62] fg
+emacs repeat_after_me.sh
+
+[1]+  Stopped                 emacs repeat_after_me.sh
+[login1 scripting:63] chmod u+x repeat_after_me.sh
+[login1 scripting:64] ./repeat_after_me.sh "simon says"
+simon says
+[login1 scripting:65] ./repeat_after_me.sh "simon says" foo
+simon says
+[login1 scripting:66] cat repeat_after_me.sh
+#!/bin/bash
+
+echo $1
+[login1 scripting:67] ./repeat_after_me.sh
+
+[login1 scripting:68] fg
+emacs repeat_after_me.sh
+
+[1]+  Stopped                 emacs repeat_after_me.sh
+[login1 scripting:69] ./repeat_after_me.sh
+you supplied 0 arguments
+
+[login1 scripting:70] fg
+emacs repeat_after_me.sh
+
+[1]+  Stopped                 emacs repeat_after_me.sh
+[login1 scripting:71] ./repeat_after_me.sh
+You have supplied no arguments!
+Try again.
+[login1 scripting:72] ./repeat_after_me.sh foo
+foo
+[login1 scripting:73] ls
+hello.sh*  hello.sh~  repeat_after_me.sh*  repeat_after_me.sh~*
+[login1 scripting:74] fg
+emacs repeat_after_me.sh
+
+[1]+  Stopped                 emacs repeat_after_me.sh
+[login1 scripting:75] # in emacs C-x C-f is "file open"
+[login1 scripting:75] fg
+emacs repeat_after_me.sh
+
+[1]+  Stopped                 emacs repeat_after_me.sh
+[login1 scripting:76] chmod u+x describe.sh
+[login1 scripting:77] # this file describes its argument:
+[login1 scripting:77] cat describe.sh
+#!/bin/bash
+
+ls -l $1
+[login1 scripting:78] ./describe.sh hello.sh
+-rwx------ 1 eijkhout G-25072 32 Sep  2 14:31 hello.sh
+[login1 scripting:79] fg
+emacs repeat_after_me.sh
+
+[1]+  Stopped                 emacs repeat_after_me.sh
+[login1 scripting:80] # plagiarism: there is a script, call it `submit.sh'
+[login1 scripting:80] # 1. if one student does `submit.sh file1
+[login1 scripting:80] # it accepts it
+[login1 scripting:80] # 2. if the script gets used with `submit.sh file2' it works
+[login1 scripting:80] # 3. if someone subsmits a duplicate:
+[login1 scripting:80] # cp file1 myfile ; submit.sh myfile : that should get detected
+[login1 scripting:80] cat > original
+This
+is my
+file
+[login1 scripting:81] cp original copy
+[login1 scripting:82] diff original copy
+[login1 scripting:83] fg
+emacs repeat_after_me.sh
+
+[1]+  Stopped                 emacs repeat_after_me.sh
+[login1 scripting:84] cat original
+This
+is my
+file
+[login1 scripting:85] cat copy
+This
+is my
+copied
+file
+[login1 scripting:86] fg
+emacs repeat_after_me.sh
+
+[1]+  Stopped                 emacs repeat_after_me.sh
+[login1 scripting:87] cat original
+This
+is my
+file
+[login1 scripting:88] cat different
+This
+an original
+file
+[login1 scripting:89] diff original different
+2c2
+< is my
+---
+> an original
+[login1 scripting:90] # the `diff' command says they are different.
+[login1 scripting:90] # but ` diff original copy ' gave no output so they are the same
+
+[login1 scripting:91] # add these two lines to your .bashrc file:
+[login1 scripting:91] cat > extralines
+export PATH=/work2/00434/eijkhout/testers335394fall2021:$PATH
+export PYTHONPATH=/work2/00434/eijkhout/testers335394fall2021:$PYTHONPATH
+
+
+EMACS TUTORIAL
+
+# C-f is character forward
+# C-b is char back
+
+# C-p is previous line
+# C-n is next line
+
+# C-a is beginning of line
+# C-e is end of line
+
+# C-x C-s is save
+# C-x C-c is exit
+# C-x C-f is find file
+
+# if you are programming, emacs `understands' the language
+# hitting TAB usually fixes the indentation
+
+# C-z pushes emacs into the background,
+# type "fg" in the shell to get it in the foreground again
+
