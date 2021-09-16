@@ -1,0 +1,497 @@
+[login4 eijkhout:7] mkdir sds335make
+[login4 eijkhout:8] cd !$
+cd sds335make
+[login4 sds335make:9] hostname
+login4.frontera.tacc.utexas.edu
+[login4 sds335make:10] whoami
+eijkhout
+[login4 sds335make:11] pwd
+/work2/00434/eijkhout/sds335make
+[login4 sds335make:12] ls
+[login4 sds335make:13] emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:14] icc -o main main.c
+[login4 sds335make:15] main
+hello world
+[login4 sds335make:16] ./main
+hello world
+[login4 sds335make:17] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:18] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:19] # let's pretend I didn't already have the program
+[login4 sds335make:19] rm main
+[login4 sds335make:20] ls
+main.c	main.c~  Makefile
+[login4 sds335make:21] # now instead of compiling by hand I use make:
+[login4 sds335make:21] make main
+icc -o main main.c
+[login4 sds335make:22] make main
+make: `main' is up to date.
+[login4 sds335make:23] # no recompilation because none is needed
+[login4 sds335make:23] # so let's make recompilation necessary by editing the file
+[login4 sds335make:23] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:24] # now the source file is updated, let;'s call make again
+[login4 sds335make:24] cat Makefile
+main :
+     icc -o main main.c
+# the previous line starts with a TAB
+[login4 sds335make:25] make main
+make: `main' is up to date.
+[login4 sds335make:26] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:27] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:28] # the source file is update, but Make does not know that that has implications
+[login4 sds335make:28] # make figures: main exists, I'm good.
+[login4 sds335make:28] make main
+make: `main' is up to date.
+[login4 sds335make:29] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:30] cat Makefile
+main : main.c
+     icc -o main main.c
+# the previous line starts with a TAB
+[login4 sds335make:31] # now main depends on main.c
+[login4 sds335make:31] make main
+icc -o main main.c
+[login4 sds335make:32] # no changes:
+[login4 sds335make:32] !ma
+make main
+make: `main' is up to date.
+[login4 sds335make:33] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:34] # now we have 2 files:
+[login4 sds335make:34] cat print.c
+void printfun() {
+  printf("Hello world\n");
+}
+[login4 sds335make:35] # the previous compile command is not enough:
+[login4 sds335make:35] icc -o main main.c
+main.c(6): warning #266: function "printfun" declared implicitly
+    printfun();
+    ^
+
+/opt/apps/gcc/8.3.0/bin/ld: /tmp/iccqvt6Dj.o: in function `main':
+main.c:(.text+0x2d): undefined reference to `printfun'
+[login4 sds335make:36] ls *.c
+main.c	print.c
+[login4 sds335make:37] # the program is spread over two .c files, so how do I build the program?
+[login4 sds335make:37] icc -o main *.c
+main.c(6): warning #266: function "printfun" declared implicitly
+    printfun();
+    ^
+
+print.c(2): warning #266: function "printf" declared implicitly
+    printf("Hello world\n");
+    ^
+
+[login4 sds335make:38] # I need to fix some syntax
+[login4 sds335make:38] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:39] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:40] cat main.c
+#include <stdlib.h>
+#include <stdio.h>
+
+// We do not do:
+// #include "print.c"
+
+// enough to have a header/prototype
+void printf();
+
+int main() {
+
+  printfun();
+  return 0;
+}
+
+
+// emacs: C-x C-f file file
+// C-x C-s : save
+// C-z : put in the background,
+//  "fg" on the command for foreground
+
+// navigation:
+// C-a : start of line
+// C-e : end of line
+// C-p prev line
+// C-n next line
+// C-f char forward
+// C-b char back
+// ESC f : word forward
+// ESC b : word back
+
+// panes:
+// C-x 3 : vertical split
+// C-x o : other panel
+[login4 sds335make:41] cat print.c
+#include <stdio.h>
+
+void printfun() {
+  printf("Hello world\n");
+}
+[login4 sds335make:42] icc -o main *.c
+main.c(8): warning #147: declaration is incompatible with "int printf(const char *__restrict__, ...)" (declared at line 362 of "/usr/include/stdio.h")
+  void printf();
+       ^
+
+main.c(12): warning #266: function "printfun" declared implicitly
+    printfun();
+    ^
+
+[login4 sds335make:43] # sorry typo
+[login4 sds335make:43] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:44] icc -o main *.c
+[login4 sds335make:45] ./main
+Hello world
+[login4 sds335make:46] # let's put that compile line into the make file
+[login4 sds335make:46] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:47] cat Makefile
+main : main.c
+     icc -o main main.c print.c
+# the previous line starts with a TAB
+[login4 sds335make:48] # do you see the error?
+[login4 sds335make:48] # let's clean up
+[login4 sds335make:48] ls
+main*  main.c  main.c~ Makefile  Makefile~  print.c  print.c~
+[login4 sds335make:49] rm main
+[login4 sds335make:50] # rebuild
+[login4 sds335make:50] make main
+icc -o main main.c print.c
+[login4 sds335make:51] # if I remake:
+[login4 sds335make:51] make main
+make: `main' is up to date.
+[login4 sds335make:52] # no reocmpilation because no changes
+[login4 sds335make:52] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:53] # instead of having one compile command, I'm splitting it up
+[login4 sds335make:53] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:54] cat Makefile
+main : main.c print.c
+     icc -c main.c
+     icc -c print.c
+     icc -o main main.o print.o
+
+# the previous line starts with a TAB
+[login4 sds335make:55] # the "-c" flag means: compile only, don't build an executable
+[login4 sds335make:55] icc -c main.c
+[login4 sds335make:56] icc -c print.c
+[login4 sds335make:57] # this gives .o files: pronounced "dot-oh"
+[login4 sds335make:57] # strictly speaking "object files"
+[login4 sds335make:57] ls
+main*  main.c  main.c~ main.o	Makefile  Makefile~  print.c  print.c~	print.o
+[login4 sds335make:58] cat print.oELF>X@@
+        	       print.cprintfunputs��   ��fDHello worldx
+                                                       �.shstrtab.strtab.symtab.data.bss.text.rodata.str1.4.note.GNU-stack.eh_frame.rela.text.rela.eh_frame
+						       ��������
+                 @XHH&P,2`
+                          ;lKp�oU[login4 sds335make:59]
+[login4 sds335make:59] # let's build everything:
+[login4 sds335make:59] make main
+icc -c main.c
+icc -c print.c
+icc -o main main.o print.o
+[login4 sds335make:60] # it echoes all the build commands
+[login4 sds335make:60] # now let's edit just one file
+[login4 sds335make:60] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:61] # only print.c has been changed
+[login4 sds335make:61] # but if I make:
+[login4 sds335make:61] make main
+icc -c main.c
+icc -c print.c
+icc -o main main.o print.o
+[login4 sds335make:62] # time for the next refinement of the make file
+[login4 sds335make:62] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:63] cat Makefile
+main : main.o print.o
+     icc -o main main.o print.o
+main.o : main.c
+       icc -c main.c
+print.o : print.c
+	icc -c print.c
+
+# the previous line starts with a TAB
+[login4 sds335make:64] # there are two lines that say "the oh file depends on the source file"
+[login4 sds335make:64] # and then the main executable depends on the oh files
+[login4 sds335make:64] # let's run this from scratch
+[login4 sds335make:64] rm main *.o
+[login4 sds335make:65] make main
+icc -c main.c
+icc -c print.c
+icc -o main main.o print.o
+[login4 sds335make:66] # build order is not the order of specification:
+[login4 sds335make:66] # make is a "non-linear programming language"
+[login4 sds335make:66] # a makefile is like a dependency graph
+[login4 sds335make:66]
+[login4 sds335make:66] # calling make again:
+[login4 sds335make:66] make main
+make: `main' is up to date.
+[login4 sds335make:67] # everything is still up to date
+[login4 sds335make:67] # now let's edit just one source file
+[login4 sds335make:67] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:68] # I have edited the print.c
+[login4 sds335make:68] cat print.c
+#include <stdio.h>
+
+void printfun() {
+  printf("Hello blue world\n");
+}
+[login4 sds335make:69] # now if Make:
+[login4 sds335make:69] make main
+icc -c print.c
+icc -o main main.o print.o
+[login4 sds335make:70] # I did not edit the main file, and it did not get recompiled.
+[login4 sds335make:70] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:71] # I have introduced a header:
+[login4 sds335make:71] cat print.c
+#include <stdio.h>
+#include "print.h"
+
+void printfun() {
+  printf("Hello blue world\n");
+}
+[login4 sds335make:72] cat print.h
+void printfun();
+[login4 sds335make:73] # the makefile does not need changes, because headers do not need to be compiled.
+[login4 sds335make:73] # well, kinda sorta
+[login4 sds335make:73] make main
+icc -c main.c
+icc -c print.c
+icc -o main main.o print.o
+[login4 sds335make:74] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:75] make main
+icc -c main.c
+main.c(8): catastrophic error: cannot open source file "print.h"
+  #include <print.h>
+                    ^
+
+compilation aborted for main.c (code 4)
+make: *** [main.o] Error 4
+[login4 sds335make:76] # this was a sidebar, let's get back to the story
+[login4 sds335make:76] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:77] # the function now has a parameter:
+[login4 sds335make:77] cat print.c
+#include <stdio.h>
+#include "print.h"
+
+void printfun(int n) {
+  printf("Hello %d world\n",n);
+}
+[login4 sds335make:78] make main
+icc -c main.c
+icc -c print.c
+icc -o main main.o print.o
+[login4 sds335make:79] ./main
+Hello 0 world
+[login4 sds335make:80] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:81] # the header has not been updated:
+[login4 sds335make:81] cat print.h
+void printfun(void);
+[login4 sds335make:82] # so there is a mismatch
+[login4 sds335make:82] rm main *.o
+[login4 sds335make:83] # now when we build:
+[login4 sds335make:83] make main
+icc -c main.c
+icc -c print.c
+print.c(4): warning #147: declaration is incompatible with "void printfun(void)" (declared at line 1 of "print.h")
+  void printfun(int n) {
+       ^
+
+icc -o main main.o print.o
+[login4 sds335make:84] # clearly we forgot to update the header
+[login4 sds335make:84] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:85] cat print.c
+#include <stdio.h>
+#include "print.h"
+
+void printfun(int n) {
+  printf("Hello %d world\n",n);
+}
+[login4 sds335make:86] cat print.h
+void printfun(int);
+[login4 sds335make:87] # now they are compatible again
+[login4 sds335make:87] make main
+make: `main' is up to date.
+[login4 sds335make:88] # remaining problem with the changed function:
+[login4 sds335make:88] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:89] # adding dependencies on the header in the makefile:
+[login4 sds335make:89] cat Makefile
+main : main.o print.o
+     icc -o main main.o print.o
+main.o : main.c print.h
+       icc -c main.c
+print.o : print.c print.h
+	icc -c print.c
+
+# the previous line starts with a TAB
+[login4 sds335make:90] make main
+icc -c main.c
+main.c(12): error #165: too few arguments in function call
+    printfun();
+             ^
+
+compilation aborted for main.c (code 2)
+make: *** [main.o] Error 2
+[login4 sds335make:91] # let's fix this
+[login4 sds335make:91] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:92] make main
+icc -c main.c
+icc -c print.c
+icc -o main main.o print.o
+[login4 sds335make:93] ./main
+Hello 5 world
+[login4 sds335make:94] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:95] # let's start making the makefile more compact
+[login4 sds335make:95] cat Makefile
+main : main.o print.o
+     icc -o main main.o print.o
+main.o : main.c print.h
+       icc -c main.c
+print.o : print.c print.h
+	icc -c print.c
+
+# the previous line starts with a TAB
+[login4 sds335make:96] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:97] rm main *.o
+[login4 sds335make:98] make main
+icc -c main.c
+icc -c print.c
+icc -o main main.o print.o
+[login4 sds335make:99] # make file with template rule:
+[login4 sds335make:99] cat Makefile
+main : main.o print.o
+     icc -o main main.o print.o
+%.o : %.c
+    icc -c $^
+# anything .o depends the corresponding .c
+# and compile as before, note "$^"
+
+# main.o : main.c print.h
+# 	 icc -c main.c
+# print.o : print.c print.h
+# 	  icc -c print.c
+
+# the previous line starts with a TAB
+[login4 sds335make:100] # let's make the cleanup more elegant:
+[login4 sds335make:100] fg
+emacs
+
+[1]+  Stopped                 emacs
+[login4 sds335make:101] # makefile with clean rule:
+[login4 sds335make:101] cat Makefile
+main : main.o print.o
+     icc -o main main.o print.o
+%.o : %.c
+    icc -c $^
+# anything .o depends the corresponding .c
+# and compile as before, note "$^"
+
+# main.o : main.c print.h
+# 	 icc -c main.c
+# print.o : print.c print.h
+# 	  icc -c print.c
+
+clean :
+      rm main *.o
+
+[login4 sds335make:102] make clean
+rm main *.o
+[login4 sds335make:103] # again?
+[login4 sds335make:103] make clean
+rm main *.o
+rm: cannot remove ‘main’: No such file or directory
+rm: cannot remove ‘*.o’: No such file or directory
+make: *** [clean] Error 1
+[login4 sds335make:104] fg
+emacs
+[login4 sds335make:105] cat Makefile
+main : main.o print.o
+     ${CC} -o main main.o print.o
+# use a macro for the compiler
+CC = icc
+%.o : %.c
+    ${CC} -c $^
+# anything .o depends the corresponding .c
+# and compile as before, note "$^"
+
+# now we need to reintroduce the header dependency:
+main.o print.o : print.h
+
+# main.o : main.c print.h
+# 	 icc -c main.c
+# print.o : print.c print.h
+# 	  icc -c print.c
+
+clean :
+      rm -f main *.o
+
+[login4 sds335make:106]
