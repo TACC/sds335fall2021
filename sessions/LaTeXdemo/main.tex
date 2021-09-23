@@ -1,91 +1,67 @@
-\documentclass{article} % but also try: {artikel3}
-% IEEEtrans
-% SIAMwhatever
-\usepackage[utf8]{inputenc}
-\usepackage{graphicx,pslatex}
+\documentclass{article}
+
+%%%% 
+%%%% try also class: {IEEEtran}
+%%%%
+
+\usepackage{graphicx}
 \input list
+\lstset{language=C,style=demostyle}
 
-\title{SDS 335 Demo}
-\author{Victor Eijkhout }
-\date{15 October 2020}
-
-%\textwidth=2in
 \begin{document}
-
+\title{STC \LaTeX\ demo}
+\author{Victor Eijkhout}
+\date{2021}
 \maketitle
 
-\tableofcontents
+\section{An introduction to \LaTeX}
 
-\section{Introduction}
+In 1978 Donald Knuth started working \TeX, 
+which is pronounced `tek' or `Tau Epsilon Chi',
+and that really doesn't stand for anything.
 
-This is the first section of my document.
-It has two sentences.
+Then in the mid-80s, Leslie Lamport
+wrote an extension to \TeX, called \LaTeX.
 
-After a blank line
-it
-starts a new paragraph.
-This paragraph was indented. Therefore it looked
-weird when it was so short.
-% this is a comment: \[ indicates a display formula
-\[ \left( x \right ) \left( \int_0^\infty x\partial x= 5 \right) \]
-Mathematics is clever $\int_0^\infty x\partial x= 5$
-% this is a comment: $foo$ is an in-line formula
-because it knows where it goes.
+Observations:
+\begin{enumerate}
+    \item Input lines do not correspond to output lines
+    \item A blank line makes a new paragraph.
+    \item A backslash introduces a command.
+\end{enumerate}
+We will prove interesting stuff in
+section~\ref{sec:math}.
 
-\section{Code}
+\section{Math}
+\label{sec:math}
 
-Verbatim mode uses mono-space
-\begin{verbatim}
-// first a function
-void f() { return 5;}
-/* now the main */
-int main() {
-  return 0;
-}
-\end{verbatim}
-But the listing package is much nicer:
-\lstset{language=C,style=reviewcode}
-\begin{lstlisting}
-// first a function
-void f() { return 5;}
-/* now the main */
-int main() {
-  return 0;
-}
-\end{lstlisting}
-\section{Recapitulation}
-\label{sec:recap}
-\subsection{foo}
-\subsubsection{bar}
+\TeX was written for very math-y books.
+\[ \int_0^\infty xdx=\infty \]
+Formulas can also be $\int x=1/2x^2$ in text.
+Formulas can also be numbered:
+\begin{equation}
+\int_0^\infty xdx=\infty
+\label{formula:inf}
+\end{equation}
+Combining formula~\ref{formula:inf} and stuff
+gives stuff.
 
-Final thoughts, to elaborate on section \ref{sec:dev}.
-\begin{itemize}
-    \item first
-    \item second
-\end{itemize}
-
-In this figure~\ref{fig:butterfly} we see.
-
-\begin{figure}[ht] 
-%"ht" means "here if possible, otherwise top of next page
+\begin{figure}[ht]
     \centering
-\includegraphics[scale=.55]{butterfly}
+\includegraphics[scale=1.1]{graphics/caches}
     \caption{Caption}
-    \label{fig:butterfly}
+    \label{fig:my_label}
 \end{figure}
 
-\section{Development}
-\label{sec:dev}
+%\lstverbatiminput{sourcefile} ?
+\begin{lstlisting}
+int x=5;
+for (int i=0; i<n; i++)
+ y = x*x;
+\end{lstlisting}
+Earlier results were proved in \cite{AdJo:colorblind}.
 
-\begin{enumerate}
-    \item one thought
-    \item another
-\end{enumerate}
-
-For related work see~\cite{Victor:otherbook}.
-Another paragraph.
-
-%\bibliographystyle{plain} % IEEEtrans
-%\bibliography{vle}
-
+\bibliographystyle{plain}
+\bibliography{math}
 \end{document}
+
